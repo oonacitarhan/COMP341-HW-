@@ -143,7 +143,7 @@ def uniformCostSearch(problem):
             for s in succs:
                 if s[0] not in explored:
                     cost = problem.getCostOfActions(path) + s[2]
-                    p_queue.push((s[0],path+[s[1]]),cost)
+                    p_queue.update((s[0],path+[s[1]]),cost)
     return []
 
 def nullHeuristic(state, problem=None):
@@ -172,7 +172,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 if s[0] not in explored:
                     cost = problem.getCostOfActions(path) + s[2]
                     cost += heuristic(s[0], problem)
-                    p_queue.push((s[0],path+[s[1]]),cost)
+                    p_queue.update((s[0],path+[s[1]]),cost)
     return []
 
 

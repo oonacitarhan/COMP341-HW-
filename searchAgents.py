@@ -339,7 +339,6 @@ class CornersProblem(search.SearchProblem):
                 else: successor = ((nextx,nexty),state[1])
                 successors.append((successor,action,1))
         self._expanded += 1 # DO NOT CHANGE
-        #print(successors)
         return successors
 
     def getCostOfActions(self, actions):
@@ -373,14 +372,21 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    dists = []
+    remaining_corners = []
+    heuristic = 0
     for c in corners:
         if c not in state[1]:
-            m_dist = util.manhattanDistance(state[0],c)
-            dists.append(m_dist)
-    if not dists: return 0
-    #avg = sum(dists) / len (dists)
-    return max(dists)
+            remaining_corners.append(c)
+    pos = state[0]
+    while remaining_corners:
+        dist_dict = {}
+        for c in remaining_corners:
+            dist_dict[c] = util.manhattanDistance(pos ,c)
+        c = min(dist_dict, key=dist_dict.get)
+        heuristic = heuristic + dist_dict[c]
+        pos = c
+        remaining_corners.remove(c) 
+    return heuristic
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -476,7 +482,7 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     dists = []
     for c in foodGrid.asList():
-        m_dist = util.manhattanDistance(state[0],c)
+        m_dist = mazeDistance(state[0], c, problem.startingGameState)
         dists.append(m_dist)
     if not dists: return 0
     return max(dists)
